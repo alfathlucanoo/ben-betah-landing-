@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben Betah Kos | Kos Full Service Dekat UNDIP Semarang</title>
+    <meta name="description" content="Ben Betah Kos adalah kos full service di Srondol, Banyumanik, Semarang, dekat UNDIP, dengan fasilitas lengkap seperti kamar mandi dalam, WiFi Starlink, swimming pool, laundry, security, dan communal area.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        bb: {
+                            ivory: '#FDFBF7',
+                            charcoal: '#2D3748',
+                            olive: '#6B7F72',
+                            cream: '#F3EFEA',
+                            gold: '#C5A880',
+                            border: '#E2E8F0',
+                            muted: '#718096'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.05)',
+                        'floating': '0 20px 40px -20px rgba(107, 127, 114, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #2D3748;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF7; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Fade In Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Utility for hiding scrollbar in tabs */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo } = React;
+
+        const Icons = {
+            Menu: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>,
+            X: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+            MapPin: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>,
+            GraduationCap: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.42 10.922a2 2 0 0 1-.019 3.838L12.83 19.81a2 2 0 0 1-1.66 0L2.6 14.76a2 2 0 0 1-.018-3.838L11.17 5.86a2 2 0 0 1 1.66 0Z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>,
+            Waves: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>,
+            Wifi: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" x2="12.01" y1="20" y2="20"/></svg>,
+            CheckCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>,
+            ShieldCheck: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2-1 4-2 8-2 2 1 4 2 8 2a1 1 0 0 1 1 1v7z"/><path d="m9 12 2 2 4-4"/></svg>,
+            Briefcase: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+            ChevronDown: ({className}) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>,
+            MessageCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>,
+            Coffee: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>,
+            Sun: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>,
+            Music: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>,
+            Car: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>,
+            Bed: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>,
+        };
+
+        // Hook to reveal elements on scroll
+        const useScrollReveal = () => {
+            useEffect(() => {
+                const reveals = document.querySelectorAll(".reveal");
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("active");
+                            // Optional: Stop observing once revealed
+                            // observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+                reveals.forEach((element) => {
+                    observer.observe(element);
+                });
+
+                return () => reveals.forEach(el => observer.unobserve(el));
+            }, []);
+        };
+
+        const SectionHeader = ({ title, subtitle, className = "" }) => (
+            <div className={`mb-12 md:mb-16 reveal ${className}`}>
+                <h2 className="text-3xl md:text-4xl font-bold text-bb-charcoal mb-4 tracking-tight">{title}</h2>
+                {subtitle && <p className="text-lg text-bb-muted max-w-2xl">{subtitle}</p>}
+            </div>
+        );
+
+        const Button = ({ children, variant = 'primary', className = "", href = "#" }) => {
+            const baseStyle = "inline-flex items-center justify-center px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:-translate-y-1";
+            const variants = {
+                primary: "bg-bb-charcoal text-white hover:bg-black hover:shadow-floating",
+                secondary: "bg-white text-bb-charcoal border border-bb-border hover:bg-bb-cream",
+                accent: "bg-bb-olive text-white hover:bg-[#5a6b60] hover:shadow-floating"
+            };
+            
+            return (
+                <a href={href} className={`${baseStyle} ${variants[variant]} ${className}`}>
+                    {children}
+                </a>
+            );
+        };
+
+        const Navbar = () => {
+            const [isScrolled, setIsScrolled] = useState(false);
+            const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => setIsScrolled(window.scrollY > 20);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const navLinks = [
+                { name: 'Tentang', href: '#tentang' },
+                { name: 'Fasilitas', href: '#fasilitas' },
+                { name: 'Kamar', href: '#kamar' },
+                { name: 'Harga', href: '#harga' },
+                { name: 'Lokasi', href: '#lokasi' },
+                { name: 'FAQ', href: '#faq' },
+            ];
+
+            return (
+                <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}`}>
+                    <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+                        <a href="#" className="text-xl md:text-2xl font-bold tracking-tighter text-bb-charcoal flex items-center gap-2">
+                            <span className="w-8 h-8 rounded-full bg-bb-olive text-white flex items-center justify-center text-sm">B</span>
+                            BEN BETAH<span className="text-bb-olive">.</span>
+                        </a>
+
+                        {/* Desktop Nav */}
+                        <div className="hidden md:flex items-center space-x-8">
+                            {navLinks.map((link) => (
+                                <a key={link.name} href={link.href} className="text-sm font-medium text-bb-charcoal/80 hover:text-bb-olive transition-colors">
+                                    {link.name}
+                                </a>
+                            ))}
+                            <Button href="#kontak" variant="primary" className="!py-2.5 !px-5 text-sm">Tanya Kamar</Button>
+                        </div>
+
+                        {/* Mobile Toggle */}
+                        <button className="md:hidden text-bb-charcoal" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                            {isMobileMenuOpen ? <Icons.X /> : <Icons.Menu />}
+                        </button>
+                    </div>
+
+                    {/* Mobile Menu */}
+                    <div className={`md:hidden absolute top-full left-0 w-full bg-white shadow-lg transition-all duration-300 origin-top ${isMobileMenuOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'}`}>
+                        <div className="flex flex-col px-6 py-4 space-y-4">
+                            {navLinks.map((link) => (
+                                <a key={link.name} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-bb-charcoal py-2 border-b border-bb-cream">
+                                    {link.name}
+                                </a>
+                            ))}
+                            <Button href="#kontak" className="w-full mt-4">Tanya Kamar</Button>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const Hero = () => {
+            return (
+                <header className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                            
+                            {/* Text Content */}
+                            <div className="reveal">
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-bb-cream text-bb-olive text-xs font-semibold tracking-wide mb-6 uppercase">
+                                    <Icons.MapPin /> Srondol, Banyumanik
+                                </div>
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-bb-charcoal leading-[1.1] mb-6 tracking-tight">
+                                    Ben Betah di <br/>
+                                    <span className="text-bb-olive">Tempat yang Tepat.</span>
+                                </h1>
+                                <p className="text-lg md:text-xl text-bb-muted mb-8 max-w-lg leading-relaxed">
+                                    Kos Full Service Premium di Srondol, Banyumanik — Dekat UNDIP, Nyaman untuk Tinggal, Lengkap untuk Kebutuhan Sehari-hari.
+                                </p>
+                                
+                                <div className="flex flex-wrap items-center gap-4 mb-10">
+                                    <Button variant="primary" href="#kamar">Lihat Kamar</Button>
+                                    <Button variant="secondary" href="#kontak">Hubungi Kami</Button>
+                                </div>
+
+                                <div className="flex flex-wrap gap-4 text-sm font-medium text-bb-charcoal/70">
+                                    <span className="flex items-center gap-1.5"><Icons.GraduationCap /> Dekat UNDIP</span>
+                                    <span className="flex items-center gap-1.5"><Icons.Waves /> Swimming Pool 24 Jam</span>
+                                    <span className="flex items-center gap-1.5"><Icons.Wifi /> WiFi Starlink</span>
+                                </div>
+                            </div>
+
+                            {/* Hero Visual */}
+                            <div className="relative reveal hidden md:block" style={{ transitionDelay: '200ms' }}>
+                                <div className="absolute inset-0 bg-bb-olive/20 rounded-3xl transform translate-x-4 translate-y-4 -z-10"></div>
+                                <img 
+                                    src="image_a51bb2.jpg" 
+                                    alt="Fasad Depan Ben Betah Kos Eksklusif" 
+                                    className="w-full h-[500px] lg:h-[640px] object-cover object-center rounded-3xl shadow-2xl" 
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        const TrustHighlights = () => {
+            const highlights = [
+                { icon: <Icons.CheckCircle />, title: "Full Service", desc: "Semua kebutuhan dasar tinggal tersedia dalam satu tempat." },
+                { icon: <Icons.GraduationCap />, title: "Dekat UNDIP", desc: "Lokasi strategis di Srondol, Banyumanik, Semarang." },
+                { icon: <Icons.ShieldCheck />, title: "24/7 Security", desc: "Keamanan ekstra dengan tenaga security dan sistem CCTV." },
+                { icon: <Icons.Waves />, title: "Swimming Pool", desc: "Fasilitas kolam renang eksklusif yang dapat digunakan 24 jam." }
+            ];
+
+            return (
+                <section className="py-12 bg-white">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 divide-x divide-bb-cream">
+                            {highlights.map((item, idx) => (
+                                <div key={idx} className="flex flex-col items-center text-center px-4 reveal" style={{ transitionDelay: `${idx * 100}ms` }}>
+                                    <div className="w-12 h-12 rounded-2xl bg-bb-cream text-bb-olive flex items-center justify-center mb-4">
+                                        {item.icon}
+                                    </div>
+                                    <h3 className="font-semibold text-bb-charcoal mb-2">{item.title}</h3>
+                                    <p className="text-sm text-bb-muted leading-relaxed">{item.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const About = () => {
+            return (
+                <section id="tentang" className="py-24 bg-bb-charcoal text-white">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12">
+                        <div className="grid md:grid-cols-2 gap-16 items-center">
+                            <div className="reveal">
+                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight leading-tight">
+                                    Lebih dari Sekadar <br/><span className="text-bb-gold">Tempat Tinggal.</span>
+                                </h2>
+                                <p className="text-lg text-white/80 mb-6 leading-relaxed">
+                                    Ben Betah Kos merupakan kos full service premium yang dirancang untuk memberikan pengalaman tinggal yang nyaman, praktis, dan menyenangkan di Semarang.
+                                </p>
+                                <p className="text-lg text-white/80 leading-relaxed mb-8">
+                                    Berlokasi di kawasan Srondol, Banyumanik, kami menawarkan akses strategis menuju berbagai fasilitas kota dan lingkungan kampus, khususnya Universitas Diponegoro. Konsepnya menghadirkan lingkungan yang membuat Anda merasa aman, dan benar-benar betah.
+                                </p>
+                            </div>
+                            <div className="reveal relative">
+                                <div className="absolute inset-0 bg-bb-gold/10 transform translate-x-4 translate-y-4 rounded-3xl"></div>
+                                <div className="bg-bb-charcoal p-10 md:p-14 rounded-3xl relative z-10 border border-white/10 flex flex-col justify-center min-h-[400px] shadow-2xl">
+                                    <div className="w-12 h-12 mb-8 text-bb-gold">
+                                        <Icons.GraduationCap className="w-12 h-12" />
+                                    </div>
+                                    <h3 className="text-2xl font-semibold mb-4">Brand Philosophy</h3>
+                                    <p className="text-white/60 italic leading-relaxed text-lg">
+                                        "Merancang ruang yang bukan hanya sekadar untuk singgah, melainkan sebuah ekosistem kehidupan yang mendukung produktivitas dan ketenangan pikiran."
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Facilities = () => {
+            const [activeTab, setActiveTab] = useState('Kamar');
+            
+            const categories = {
+                'Kamar': [
+                    { name: 'Kamar Mandi Dalam', icon: <Icons.ShieldCheck className="w-6 h-6"/> },
+                    { name: 'AC & Furniture Set', icon: <Icons.Bed className="w-6 h-6"/> },
+                    { name: 'WC Duduk & Shower', icon: <Icons.Waves className="w-6 h-6"/> },
+                    { name: 'Water Heater', icon: <Icons.Sun className="w-6 h-6"/> },
+                ],
+                'Service': [
+                    { name: 'Security & CCTV 24 Jam', icon: <Icons.ShieldCheck className="w-6 h-6"/> },
+                    { name: 'Free Laundry (2 Pasang)', icon: <Icons.Waves className="w-6 h-6"/> },
+                    { name: 'Free Housekeeping', icon: <Icons.Briefcase className="w-6 h-6"/> },
+                    { name: 'WiFi Starlink', icon: <Icons.Wifi className="w-6 h-6"/> },
+                ],
+                'Communal Area': [
+                    { name: 'Ben Wareg Café', icon: <Icons.Coffee className="w-6 h-6"/> },
+                    { name: 'Rooftop Area', icon: <Icons.Sun className="w-6 h-6"/> },
+                    { name: 'Stage Area', icon: <Icons.Music className="w-6 h-6"/> },
+                    { name: 'Swimming Pool 24 Jam', icon: <Icons.Waves className="w-6 h-6"/> },
+                ]
+            };
+
+            return (
+                <section id="fasilitas" className="py-24 bg-white border-t border-bb-border/50">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12">
+                        <SectionHeader 
+                            title="Semua yang Kamu Butuhkan, Ada di Sini." 
+                            subtitle="Fasilitas komprehensif untuk mendukung gaya hidup modern yang praktis dan efisien."
+                            className="text-center flex flex-col items-center"
+                        />
+                        
+                        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-12 reveal">
+                            {Object.keys(categories).map(tab => (
+                                <button 
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${activeTab === tab ? 'bg-bb-charcoal text-white shadow-floating' : 'bg-bb-cream text-bb-charcoal hover:bg-bb-border'}`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+                            {categories[activeTab].map((item, idx) => (
+                                <div key={idx} className="p-6 rounded-2xl border border-bb-border hover:border-bb-olive/50 bg-bb-ivory transition-colors group flex flex-col items-center text-center">
+                                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-bb-olive mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                                        {item.icon}
+                                    </div>
+                                    <h4 className="font-semibold text-bb-charcoal">{item.name}</h4>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const RoomExperience = () => {
+            return (
+                <section id="kamar" className="py-24 bg-bb-cream border-t border-bb-border/50">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12">
+                        <div className="grid lg:grid-cols-2 gap-16 items-center">
+                            <div className="reveal">
+                                <h2 className="text-3xl md:text-4xl font-bold text-bb-charcoal mb-6 tracking-tight">
+                                    Kamar yang Dibuat untuk Beristirahat.
+                                </h2>
+                                <p className="text-lg text-bb-muted mb-8 leading-relaxed">
+                                    Desain kamar clean dan minimalis, memaksimalkan pencahayaan natural. Dilengkapi dengan fasilitas premium untuk kualitas istirahat terbaik Anda setelah aktivitas harian.
+                                </p>
+                                <Button href="#kontak" variant="primary">Tanyakan Ketersediaan Kamar</Button>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4 reveal">
+                                <div className="space-y-4">
+                                    <div className="p-6 bg-white rounded-3xl shadow-soft border border-bb-border/50 transform transition-transform hover:-translate-y-1">
+                                        <div className="text-bb-olive mb-4"><Icons.Bed className="w-8 h-8" /></div>
+                                        <h4 className="font-bold text-bb-charcoal mb-2">Fully Furnished</h4>
+                                        <p className="text-sm text-bb-muted">Interior lengkap dengan kasur premium, lemari, dan meja kerja.</p>
+                                    </div>
+                                    <div className="p-6 bg-bb-olive rounded-3xl shadow-floating text-white transform transition-transform hover:-translate-y-1">
+                                        <div className="mb-4 text-white/80"><Icons.Wifi className="w-8 h-8" /></div>
+                                        <h4 className="font-bold mb-2">Terus Terkoneksi</h4>
+                                        <p className="text-sm text-white/90">Akses WiFi Starlink dedikasi khusus untuk produktivitas.</p>
+                                    </div>
+                                </div>
+                                <div className="space-y-4 pt-8">
+                                    <div className="p-6 bg-bb-charcoal rounded-3xl shadow-floating text-white transform transition-transform hover:-translate-y-1">
+                                        <div className="mb-4 text-white/80"><Icons.ShieldCheck className="w-8 h-8" /></div>
+                                        <h4 className="font-bold mb-2">Private Bath</h4>
+                                        <p className="text-sm text-white/90">Kamar mandi dalam berdesain modern dengan water heater.</p>
+                                    </div>
+                                    <div className="p-6 bg-white rounded-3xl shadow-soft border border-bb-border/50 transform transition-transform hover:-translate-y-1">
+                                        <div className="text-bb-gold mb-4"><Icons.Sun className="w-8 h-8" /></div>
+                                        <h4 className="font-bold text-bb-charcoal mb-2">Ambient Lighting</h4>
+                                        <p className="text-sm text-bb-muted">7 titik lampu LED yang dapat disesuaikan untuk mood Anda.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const CommunalArea = () => {
+            return (
+                <section className="py-24 bg-bb-cream">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12">
+                        <div className="grid md:grid-cols-2 gap-16 items-center">
+                            <div className="order-2 md:order-1 reveal">
+                                <h2 className="text-3xl md:text-4xl font-bold text-bb-charcoal mb-6 tracking-tight">Lebih Banyak Ruang untuk Beraktivitas.</h2>
+                                <p className="text-lg text-bb-muted mb-8 leading-relaxed">
+                                    Ben Betah menyediakan area komunal yang luas dan nyaman. Tempat yang tepat untuk bersantai, bersosialisasi, atau sekadar menikmati waktu luang di luar kamar.
+                                </p>
+                                <ul className="space-y-4">
+                                    <li className="flex items-center gap-3"><Icons.Coffee className="text-bb-olive w-6 h-6" /> <span className="font-medium text-bb-charcoal">Ben Wareg Café & Foodcourt</span></li>
+                                    <li className="flex items-center gap-3"><Icons.Sun className="text-bb-olive w-6 h-6" /> <span className="font-medium text-bb-charcoal">Rooftop Area & Stage</span></li>
+                                    <li className="flex items-center gap-3"><Icons.Waves className="text-bb-olive w-6 h-6" /> <span className="font-medium text-bb-charcoal">Outdoor Seating & Bar Area</span></li>
+                                </ul>
+                            </div>
+                            <div className="order-1 md:order-2 reveal">
+                                <div className="h-[400px] bg-bb-olive/10 rounded-[2rem] border border-bb-olive/20 flex items-center justify-center relative overflow-hidden">
+                                    <Icons.Coffee className="w-32 h-32 text-bb-olive/20 absolute" />
+                                    <div className="text-center relative z-10 p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-soft mx-8 max-w-sm">
+                                        <h4 className="text-xl font-bold text-bb-charcoal mb-2">Social Hub</h4>
+                                        <p className="text-bb-muted text-sm">Bertemu penghuni lain, menikmati kopi, atau sekadar mencari suasana baru tanpa harus keluar dari lingkungan kos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const SecurityParking = () => {
+            return (
+                <section className="py-24 bg-white border-t border-bb-border/50">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
+                        <div className="mb-12 md:mb-16 reveal flex flex-col items-center">
+                            <h2 className="text-3xl md:text-4xl font-bold text-bb-charcoal mb-4 tracking-tight">Keamanan & Fasilitas Ekstra.</h2>
+                            <p className="text-lg text-bb-muted max-w-2xl">Fokus pada aktivitas Anda, biarkan kami yang menjaga keamanan dan menyediakan kenyamanan ekstra.</p>
+                        </div>
+                        
+                        <div className="grid md:grid-cols-3 gap-8 reveal">
+                            <div className="p-8 rounded-3xl bg-bb-ivory border border-bb-border hover:border-bb-olive/30 transition-colors flex flex-col items-center text-center">
+                                <div className="w-16 h-16 bg-bb-cream rounded-full flex items-center justify-center text-bb-olive mb-6">
+                                    <Icons.ShieldCheck className="w-8 h-8" />
+                                </div>
+                                <h3 className="text-xl font-bold text-bb-charcoal mb-3">Keamanan 24 Jam</h3>
+                                <p className="text-bb-muted text-sm leading-relaxed">Sistem pengawasan CCTV dan tenaga keamanan standby 24/7 memastikan lingkungan yang aman untuk semua penghuni.</p>
+                            </div>
+                            <div className="p-8 rounded-3xl bg-bb-ivory border border-bb-border hover:border-bb-olive/30 transition-colors flex flex-col items-center text-center">
+                                <div className="w-16 h-16 bg-bb-cream rounded-full flex items-center justify-center text-bb-olive mb-6">
+                                    <Icons.Car className="w-8 h-8" />
+                                </div>
+                                <h3 className="text-xl font-bold text-bb-charcoal mb-3">Parkir Sangat Luas</h3>
+                                <p className="text-bb-muted text-sm leading-relaxed">Area parkir berukuran ~500m² yang leluasa menampung mobil dan motor penghuni tanpa perlu berdesakan.</p>
+                            </div>
+                            <div className="p-8 rounded-3xl bg-bb-ivory border border-bb-border hover:border-bb-olive/30 transition-colors flex flex-col items-center text-center">
+                                <div className="w-16 h-16 bg-bb-cream rounded-full flex items-center justify-center text-bb-olive mb-6">
+                                    <Icons.Briefcase className="w-8 h-8" />
+                                </div>
+                                <h3 className="text-xl font-bold text-bb-charcoal mb-3">Layanan Tambahan</h3>
+                                <p className="text-bb-muted text-sm leading-relaxed">Termasuk free laundry (2 pasang/hari), cleaning service rutin, air mineral, dan extra bed untuk keluarga.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Pricing = () => {
+            const plans = [
+                { title: "HARIAN", price: "200.000", period: "/ hari" },
+                { title: "MINGGUAN", price: "1.000.000", period: "/ minggu" },
+                { title: "BULANAN", price: "2.500.000", period: "/ bulan", highlight: true, label: "Pilihan Tinggal Jangka Panjang" }
+            ];
+
+            return (
+                <section id="harga" className="py-24 bg-white">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12">
+                        <SectionHeader 
+                            title="Pilih Durasi yang Sesuai." 
+                            className="text-center flex flex-col items-center"
+                        />
+
+                        <div className="grid md:grid-cols-3 gap-8 items-start mt-12">
+                            {plans.map((plan, idx) => (
+                                <div key={idx} className={`relative p-8 rounded-[2rem] border transition-all duration-300 reveal ${
+                                    plan.highlight 
+                                    ? 'border-bb-olive shadow-xl bg-bb-ivory transform md:-translate-y-4' 
+                                    : 'border-bb-border shadow-soft bg-white hover:border-bb-olive/50'
+                                }`} style={{ transitionDelay: `${idx * 100}ms` }}>
+                                    
+                                    {plan.highlight && (
+                                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-bb-olive text-white px-4 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
+                                            {plan.label}
+                                        </div>
+                                    )}
+
+                                    <h3 className="text-sm font-bold text-bb-muted mb-4 tracking-widest">{plan.title}</h3>
+                                    <div className="mb-8">
+                                        <span className="text-bb-charcoal text-xl font-medium">Rp</span>
+                                        <span className="text-4xl md:text-5xl font-bold text-bb-charcoal mx-1 tracking-tight">{plan.price}</span>
+                                        <span className="text-bb-muted font-medium">{plan.period}</span>
+                                    </div>
+                                    
+                                    <ul className="space-y-4 mb-8 text-sm text-bb-muted">
+                                        <li className="flex items-center gap-3"><Icons.CheckCircle className="w-5 h-5 text-bb-olive" /> Full Fasilitas Kamar</li>
+                                        <li className="flex items-center gap-3"><Icons.CheckCircle className="w-5 h-5 text-bb-olive" /> Akses Area Komunal</li>
+                                        <li className="flex items-center gap-3"><Icons.CheckCircle className="w-5 h-5 text-bb-olive" /> Free WiFi & Air Mineral</li>
+                                    </ul>
+
+                                    <a href="#kontak" className={`block w-full text-center py-4 rounded-xl font-medium transition-colors ${
+                                        plan.highlight 
+                                        ? 'bg-bb-charcoal text-white hover:bg-black' 
+                                        : 'bg-bb-cream text-bb-charcoal hover:bg-bb-olive hover:text-white'
+                                    }`}>
+                                        Tanya Ketersediaan
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const WhyUs = () => {
+            const reasons = [
+                { title: "Strategis", desc: "Dekat dengan UNDIP dan berbagai kebutuhan harian." },
+                { title: "Full Service", desc: "Laundry, cleaning, air mineral, dan berbagai fasilitas tersedia." },
+                { title: "Nyaman", desc: "Kamar dengan furniture, kamar mandi dalam, AC, dan fasilitas pendukung." },
+                { title: "Aman", desc: "Security dan CCTV 24 jam mengawasi area kos." },
+                { title: "Fasilitas Lengkap", desc: "Swimming pool, communal area, café, foodcourt, rooftop, dll." },
+                { title: "Fleksibel", desc: "Tersedia pilihan sewa harian, mingguan, maupun bulanan." }
+            ];
+
+            return (
+                <section className="py-24 bg-bb-ivory border-t border-bb-border/50">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12">
+                        <SectionHeader title="Kenapa Memilih Ben Betah?" />
+                        
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
+                            {reasons.map((reason, idx) => (
+                                <div key={idx} className="flex gap-4 reveal" style={{ transitionDelay: `${(idx % 3) * 100}ms` }}>
+                                    <div className="text-bb-gold shrink-0 mt-1">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-bb-charcoal text-lg mb-2">{reason.title}</h4>
+                                        <p className="text-bb-muted leading-relaxed text-sm">{reason.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Location = () => {
+            return (
+                <section id="lokasi" className="py-24 bg-white">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12">
+                        <div className="grid md:grid-cols-2 gap-16 items-center">
+                            <div className="reveal">
+                                <h2 className="text-3xl md:text-4xl font-bold text-bb-charcoal mb-6 tracking-tight">Tinggal Dekat dengan yang Penting.</h2>
+                                <p className="text-lg text-bb-muted mb-6 flex items-center gap-2 font-medium">
+                                    <Icons.MapPin /> Srondol, Banyumanik, Semarang
+                                </p>
+                                
+                                <ul className="space-y-4 mb-8 text-bb-charcoal/80">
+                                    <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-bb-olive"></div> Dekat Universitas Diponegoro (UNDIP)</li>
+                                    <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-bb-olive"></div> Dekat area kuliner dan hiburan</li>
+                                    <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-bb-olive"></div> Dekat fasilitas umum & minimarket</li>
+                                    <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-bb-olive"></div> Akses mudah menuju berbagai area Semarang</li>
+                                </ul>
+
+                                <Button href="https://maps.google.com" target="_blank" variant="secondary">Lihat Lokasi di Maps</Button>
+                            </div>
+                            
+                            {}
+                            <div className="reveal relative h-[400px] w-full rounded-3xl overflow-hidden bg-bb-charcoal flex items-center justify-center p-6 shadow-xl">
+                                {/* Abstract Map Background */}
+                                <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(circle at center, #6B7F72 2px, transparent 2px)', backgroundSize: '30px 30px'}}></div>
+                                
+                                {/* Radar Animation */}
+                                <div className="absolute w-48 h-48 border border-bb-olive/40 rounded-full animate-ping" style={{animationDuration: '3s'}}></div>
+                                <div className="absolute w-24 h-24 border border-bb-olive/60 rounded-full animate-ping" style={{animationDuration: '3s', animationDelay: '1s'}}></div>
+                                
+                                {/* Location Card UI */}
+                                <div className="relative z-10 bg-white p-8 rounded-2xl shadow-floating text-center max-w-sm w-full transform hover:-translate-y-1 transition-transform duration-300">
+                                    <div className="w-14 h-14 bg-bb-cream text-bb-olive rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <Icons.MapPin />
+                                    </div>
+                                    <h4 className="font-bold text-xl text-bb-charcoal mb-2">Area Srondol</h4>
+                                    <p className="text-sm text-bb-muted mb-6">Banyumanik, Semarang<br/>Jawa Tengah</p>
+                                    <a href="https://maps.google.com" target="_blank" className="block w-full py-3 px-4 bg-bb-charcoal text-white text-sm font-medium rounded-xl hover:bg-black transition-colors">
+                                        Buka Aplikasi Maps
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Gallery = () => {
+            return (
+                <section className="py-24 bg-bb-ivory overflow-hidden">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12 mb-12">
+                        <SectionHeader title="Ruang & Suasana." subtitle="Eksplorasi sudut-sudut kenyamanan yang menanti Anda di Ben Betah." />
+                    </div>
+                    
+                    {/* Horizontal scroll on mobile, Grid on desktop */}
+                    <div className="flex md:grid grid-cols-4 gap-4 px-6 md:px-12 overflow-x-auto pb-8 no-scrollbar reveal">
+                        <div className="min-w-[280px] md:min-w-0 md:col-span-2 md:row-span-2 h-[300px] md:h-[616px] bg-bb-charcoal rounded-3xl p-8 flex flex-col justify-between group overflow-hidden relative">
+                            <div className="absolute inset-0 bg-bb-olive/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <Icons.Bed className="w-12 h-12 text-bb-gold opacity-50 relative z-10" />
+                            <div className="relative z-10">
+                                <h3 className="text-3xl font-bold text-white mb-3">Kamar Utama</h3>
+                                <p className="text-white/70 text-lg leading-relaxed max-w-md">Desain interior minimalis modern yang dirancang khusus untuk memastikan privasi dan kenyamanan maksimal saat Anda beristirahat.</p>
+                            </div>
+                        </div>
+                        <div className="min-w-[250px] md:min-w-0 h-[300px] bg-bb-olive rounded-3xl p-8 flex flex-col justify-between group overflow-hidden relative">
+                             <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                             <Icons.Waves className="w-10 h-10 text-white opacity-50 relative z-10" />
+                             <div className="relative z-10">
+                                <h3 className="text-xl font-bold text-white mb-2">Swimming Pool</h3>
+                                <p className="text-white/80 text-sm leading-relaxed">Oase kesegaran 24 jam untuk relaksasi total di dalam hunian Anda.</p>
+                            </div>
+                        </div>
+                        <div className="min-w-[250px] md:min-w-0 h-[300px] bg-bb-cream rounded-3xl p-8 flex flex-col justify-between border border-bb-border group">
+                             <Icons.Coffee className="w-10 h-10 text-bb-olive opacity-50 transition-transform group-hover:scale-110" />
+                             <div>
+                                <h3 className="text-xl font-bold text-bb-charcoal mb-2">Ben Wareg Café</h3>
+                                <p className="text-bb-muted text-sm leading-relaxed">Ruang komunal luas yang dirancang untuk bersosialisasi dan bersantai.</p>
+                            </div>
+                        </div>
+                        <div className="min-w-[250px] md:min-w-0 h-[300px] bg-white rounded-3xl p-8 flex flex-col justify-between border border-bb-border group shadow-sm">
+                             <Icons.Sun className="w-10 h-10 text-bb-gold opacity-50 transition-transform group-hover:scale-110" />
+                             <div>
+                                <h3 className="text-xl font-bold text-bb-charcoal mb-2">Rooftop Area</h3>
+                                <p className="text-bb-muted text-sm leading-relaxed">Nikmati pemandangan sore yang menenangkan dan angin segar Semarang.</p>
+                            </div>
+                        </div>
+                        <div className="min-w-[250px] md:min-w-0 h-[300px] bg-bb-charcoal/5 rounded-3xl p-8 flex flex-col justify-between border border-bb-border group">
+                             <Icons.ShieldCheck className="w-10 h-10 text-bb-charcoal opacity-40 transition-transform group-hover:scale-110" />
+                             <div>
+                                <h3 className="text-xl font-bold text-bb-charcoal mb-2">Private Bath</h3>
+                                <p className="text-bb-muted text-sm leading-relaxed">Fasilitas sanitasi eksklusif di setiap kamar dengan kelengkapan yang bersih.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const FAQ = () => {
+            const [openIndex, setOpenIndex] = useState(0);
+
+            const faqs = [
+                { q: "Berapa harga kamar di Ben Betah Kos?", a: "Tersedia pilihan sewa Rp200.000/hari, Rp1.000.000/minggu, dan Rp2.500.000/bulan." },
+                { q: "Apakah tersedia kamar mandi dalam?", a: "Ya, setiap kamar memiliki kamar mandi dalam eksklusif dengan WC duduk, shower, water heater, dan wastafel." },
+                { q: "Apakah tersedia WiFi?", a: "Ya. Tersedia koneksi WiFi indoor dan outdoor berkecepatan tinggi menggunakan teknologi Starlink." },
+                { q: "Apakah tersedia fasilitas laundry?", a: "Ya, tersedia free laundry dengan ketentuan maksimal 2 pasang per hari untuk setiap penghuni." },
+                { q: "Apakah ada swimming pool?", a: "Ya, tersedia fasilitas swimming pool eksklusif yang dapat digunakan selama 24 jam." },
+                { q: "Bagaimana dengan keamanan (Security)?", a: "Keamanan Anda prioritas kami. Tenaga security dan sistem pengawasan CCTV tersedia beroperasi 24 jam." },
+                { q: "Apakah tersedia area parkir (Parking)?", a: "Ya, tersedia area parkir yang sangat luas, sekitar 500 m², cukup untuk mobil maupun sepeda motor." },
+                { q: "Apakah bisa membawa keluarga menginap?", a: "Bisa. Kami menyediakan fasilitas free extra bed selama 1 hari khusus untuk kunjungan anggota keluarga Anda." }
+            ];
+
+            return (
+                <section id="faq" className="py-24 bg-white">
+                    <div className="max-w-3xl mx-auto px-6 md:px-12">
+                        <SectionHeader title="Pertanyaan Umum" className="text-center" />
+                        
+                        <div className="space-y-4 reveal">
+                            {faqs.map((faq, idx) => (
+                                <div key={idx} className="border border-bb-border rounded-2xl overflow-hidden bg-bb-ivory transition-colors hover:border-bb-cream">
+                                    <button 
+                                        className="w-full px-6 py-5 text-left font-semibold text-bb-charcoal flex justify-between items-center"
+                                        onClick={() => setOpenIndex(openIndex === idx ? -1 : idx)}
+                                    >
+                                        <span className="pr-8">{faq.q}</span>
+                                        <Icons.ChevronDown className={`w-5 h-5 text-bb-muted transition-transform duration-300 shrink-0 ${openIndex === idx ? 'rotate-180' : ''}`} />
+                                    </button>
+                                    <div 
+                                        className={`px-6 text-bb-muted leading-relaxed overflow-hidden transition-all duration-300 ease-in-out`}
+                                        style={{ 
+                                            maxHeight: openIndex === idx ? '200px' : '0',
+                                            paddingBottom: openIndex === idx ? '20px' : '0',
+                                            opacity: openIndex === idx ? 1 : 0
+                                        }}
+                                    >
+                                        {faq.a}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const FinalCTA = () => {
+            return (
+                <section className="py-24 bg-bb-charcoal text-center relative overflow-hidden">
+                    {/* Subtle Background Pattern */}
+                    <div className="absolute inset-0 opacity-5">
+                        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <circle fill="currentColor" cx="2" cy="2" r="1"></circle>
+                                </pattern>
+                            </defs>
+                            <rect x="0" y="0" width="100%" height="100%" fill="url(#dots)"></rect>
+                        </svg>
+                    </div>
+
+                    <div className="max-w-3xl mx-auto px-6 relative z-10 reveal">
+                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">Siap Merasakan Ben Betah?</h2>
+                        <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+                            Cari tempat tinggal yang nyaman, lengkap, dan dekat dengan aktivitasmu di Semarang.
+                        </p>
+                        <div className="flex flex-col sm:flex-row justify-center gap-4">
+                            <Button href="#kontak" variant="accent" className="!px-8 !py-4 text-lg">Tanya Kamar Sekarang</Button>
+                            <Button href="#lokasi" className="!bg-white/10 !text-white !border-transparent hover:!bg-white/20 !px-8 !py-4 text-lg">Lihat Lokasi</Button>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Footer = () => {
+            return (
+                <footer className="bg-white border-t border-bb-border pt-16 pb-8">
+                    <div className="max-w-7xl mx-auto px-6 md:px-12">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                            <div className="md:col-span-2">
+                                <a href="#" className="text-2xl font-bold tracking-tighter text-bb-charcoal flex items-center gap-2 mb-4">
+                                    <span className="w-8 h-8 rounded-full bg-bb-olive text-white flex items-center justify-center text-sm">B</span>
+                                    BEN BETAH<span className="text-bb-olive">.</span>
+                                </a>
+                                <p className="text-bb-muted mb-2 font-medium">Kos Full Service Premium</p>
+                                <p className="text-bb-muted text-sm max-w-sm">Srondol, Banyumanik, Semarang<br/>[Alamat Lengkap Placeholder]</p>
+                            </div>
+                            
+                            <div>
+                                <h4 className="font-bold text-bb-charcoal mb-4">Navigasi</h4>
+                                <ul className="space-y-3 text-sm text-bb-muted">
+                                    <li><a href="#" className="hover:text-bb-olive transition-colors">Home</a></li>
+                                    <li><a href="#fasilitas" className="hover:text-bb-olive transition-colors">Fasilitas</a></li>
+                                    <li><a href="#harga" className="hover:text-bb-olive transition-colors">Harga</a></li>
+                                    <li><a href="#lokasi" className="hover:text-bb-olive transition-colors">Lokasi</a></li>
+                                    <li><a href="#faq" className="hover:text-bb-olive transition-colors">FAQ</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div id="kontak">
+                                <h4 className="font-bold text-bb-charcoal mb-4">Kontak</h4>
+                                <ul className="space-y-3 text-sm text-bb-muted">
+                                    <li><a href="#" className="hover:text-bb-olive transition-colors flex items-center gap-2"><Icons.MessageCircle /> [Nomor WhatsApp]</a></li>
+                                    <li><a href="#" className="hover:text-bb-olive transition-colors flex items-center gap-2"><Icons.MapPin /> [Instagram]</a></li>
+                                    <li><a href="#" className="hover:text-bb-olive transition-colors flex items-center gap-2"><Icons.MapPin /> Google Maps</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div className="border-t border-bb-cream pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-bb-muted">
+                            <p>© 2026 Ben Betah Kos. All Rights Reserved.</p>
+                            <p>Desain Premium & Minimalis</p>
+                        </div>
+                    </div>
+                </footer>
+            );
+        };
+
+        const FloatingWhatsApp = () => (
+            <a href="#kontak" className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-floating hover:scale-110 transition-transform md:hidden flex items-center justify-center">
+                <Icons.MessageCircle />
+            </a>
+        );
+
+        const App = () => {
+            useScrollReveal();
+
+            return (
+                <div className="font-sans antialiased text-bb-charcoal overflow-x-hidden">
+                    <Navbar />
+                    <main>
+                        <Hero />
+                        <TrustHighlights />
+                        <About />
+                        <Facilities />
+                        <RoomExperience />
+                        <CommunalArea />
+                        <SecurityParking />
+                        <Pricing />
+                        <WhyUs />
+                        <Location />
+                        <Gallery />
+                        <FAQ />
+                        <FinalCTA />
+                    </main>
+                    <Footer />
+                    <FloatingWhatsApp />
+                </div>
+            );
+        };
+
+        // Render App
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
